@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--해당 store_id의 salesDto목록을 모두 가져온다-->
+<mapper namespace="com.winterfoodies.mapper.SalesMapper">
+    <select id="getAllSalesByStoreId" parameterType="java.lang.Long" resultType="com.winterfoodies.dto.Sales">
+        SELECT * FROM sales where sales.store_id = #{store_id}
+    </select>
+
+<!--salesDto에 값을 insert 한다-->
+    <insert id="insertSales" parameterType="com.winterfoodies.dto.Sales">
+        INSERT INTO sales(customer_id, store_id, total_price, product_id, order_at)
+        VALUES (#{customer_id}, #{store_id}, #{total_price}, #{product_id}, #{order_at})  <!--물음표 아닌 prepared statement 로-->
+    </insert>
+
+<!--이 달의 매출-->
+
+    <select id="getAllSalesByMonth" parameterType="java.lang.Long" resultType="com.winterfoodies.dto.Sales">
+    <![CDATA[
+        SELECT sum(total_price) FROM sales
+        WHERE sales.store_id = #{store_id} AND (order_at > LAST_DAY(NOW() - interval 1 month)) AND order_at <= LAST_DAY(NOW())
+        ]]>
+    </select>
+
+
+<!--올해의 매출-->
+    <select id="getAllSalesByYear" parameterType="java.lang.Long" resultType="com.winterfoodies.dto.Sales">
+        SELECT sum(total_price) FROM sales
+        WHERE sales.store_id = #{store_id} AND year(order_at) = year(now())
+    </select>
+
+<!--어제의 매출-->
+    <select id="getYesterDaySales" parameterType="java.lang.Long" resultType="com.winterfoodies.dto.Sales">
+        SELECT sum(total_price) FROM sales
+        WHERE sales.store_id = #{store_id} AND order_at = curdate() - INTERVAL 1 DAY
+    </select>
+
+<!--총 누적 주문건 수-->
+    <select id="getTotalOrdersCount" parameterType="java.lang.Long" resultType="com.winterfoodies.dto.Sales">
+        SELECT count(*) FROM sales
+        WHERE sales.store_id = #{store_id}
+    </select>
+</mapper>
+
