@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.winterfoodies.mapper.SalesMapper">
+    <select id="getAllSalesByStoreId" parameterType="java.lang.Long" resultType="com.winterfoodies.dto.Sales">
+        <![CDATA[
+        SELECT * FROM sales where sales.store_id = #{store_id}
+        ]]>
+    </select>
+
+    <select id="getMonthSalesMyStoreId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        <![CDATA[
+        SELECT sum(total_price) FROM sales total_price
+        WHERE store_id = #{store_id}
+        AND (ORDER_AT > LAST_DAY(NOW() - interval 1 month)
+        AND ORDER_AT <= LAST_DAY(NOW()))
+        ]]>
+    </select>
+
+    <insert id="insertSales" parameterType="com.winterfoodies.dto.Sales">
+        <![CDATA[
+        insert into sales(customer_id, store_id, total_price, product_id, order_at)
+        values (#{customer_id}, #{store_id}, #{total_price}, #{product_id}, #{order_at})
+        ]]>
+    </insert>
+</mapper>
