@@ -16,21 +16,21 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.*;
-// 2023-02-26
+
 //1. Server Exception 처리
 //2. ControllerAdvice - exception을 모두 모았다.
 //3. log를 남겨보자 - interceptor
+
 @RestController
-@Slf4j //로그 남길 수 있는 어노테이션
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/sales")
 public class SalesController {
 
     private final SalesService salesService;
-    private final LogComponent logComponent;
 
     //1. 요청이 들어옵니다.
-    @PostMapping("/")
+    @PostMapping("")
     public Integer insertSales(@RequestBody @Valid Sales sales, BindingResult bindingResult){
         //2. @Valid라고 선언한 변수에 @NotNull을 만족하지 못하는 데이터가 있는경우 ex) store_id : "";
         //아래 이프절에 걸리게 된다.
@@ -39,15 +39,15 @@ public class SalesController {
             throw new SalesRequestBodyException("세일즈 누락 데이터 확인 요망",
                     HttpStatus.BAD_REQUEST);
         }
-        //1.로그를 남긴다.
-        logComponent.logForSales(sales);
-        //2. 인서트를 한다.
+        //1.로그를 남긴다. (AOP 개념) - 2023.03.05
+       // logComponent.logForSales(sales);
+        //1. 인서트를 한다.
         try {
             salesService.insertSales(sales); //DB에 데이터를 넣어! 근데 이때 , DB가 꺼져있는거야!
         }catch (Exception e){
 
         }
-        return null;
+        return 1;
     }
 
     @GetMapping("/month/{storeId}")

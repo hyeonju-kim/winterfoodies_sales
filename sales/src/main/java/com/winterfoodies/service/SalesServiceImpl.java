@@ -1,5 +1,6 @@
 package com.winterfoodies.service;
 
+import com.winterfoodies.aop.target.SalesLogTarget;
 import com.winterfoodies.dto.Sales;
 import com.winterfoodies.exception.SalesInternalServerException;
 import com.winterfoodies.mapper.SalesMapper;
@@ -28,6 +29,8 @@ public class SalesServiceImpl implements SalesService{
         return Optional.of(totalSales);
     }
 
+
+    @SalesLogTarget
     @Override
     public void insertSales(Sales sales) {
         salesMapper.insertSales(sales); //DB에 데이터를 넣어! 근데 이때 , DB가 꺼져있는거야!

@@ -16,6 +16,7 @@ public interface SalesMapper {
     //가게의 이달의 매출을 구해주는 함수입니다.
     Long getMonthSalesMyStoreId(Long storeId);
 
+
     //가게의 매출을 입력해주는 함수입니다.
     void insertSales(Sales sales);
 }
